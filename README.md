@@ -68,6 +68,8 @@ nix store prefetch-file --json \
 - 将主程序的 WebKitGTK / JavaScriptCore 4.0 依赖改为 nixpkgs 提供的 4.1；
   该二进制未直接引用 libsoup API。
 - 保留上游 CEF、资源和语言文件；用 GTK wrapper 配置 GSettings、GIO 等运行环境。
+- 启动器固定 `GDK_BACKEND=x11`：上游界面直接调用 X11 API，原生 Wayland
+  会出现 `GdkWaylandScreen` 转换错误并崩溃。Wayland 桌面需要启用 XWayland。
 - 修正桌面文件中的 `/opt` 路径，保留 `mailto:` 和 `.eml` 文件关联声明。
 - 不运行 Debian 安装/卸载脚本。升级通过更新 Nix 定义并重新构建完成，
   不使用客户端内置更新器修改只读 Nix store。
@@ -80,6 +82,8 @@ nix store prefetch-file --json \
 - 包内 11 个 ELF 文件的 `ldd -r` 检查无缺库、无未解析符号。
 - 桌面文件通过 `desktop-file-validate`（上游名称与描述相同的提示保留）。
 - Xvfb / X11 下可显示中文主窗口和新增邮箱账号对话框。
+- 实际 KDE Wayland 会话下通过 XWayland 显示主窗口和新增邮箱账号对话框；
+  即使会话设置 `GDK_BACKEND=wayland`，启动器仍会使用 `x11`。
 
-未验证真实账号登录、收发邮件或原生 Wayland。Wayland 会话若遇到显示问题，
-可在启用 XWayland 的前提下运行 `GDK_BACKEND=x11 nix run`。
+未验证真实账号登录和收发邮件。原生 Wayland 不受此版本支持；
+Wayland 会话下启动器会自动使用 XWayland。

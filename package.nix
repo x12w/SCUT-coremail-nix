@@ -137,8 +137,11 @@ stdenv.mkDerivation (finalAttrs: {
   '';
 
   postFixup = ''
+    # The bundled wxWidgets/CEF UI calls GdkX11 APIs unconditionally and
+    # segfaults with GdkWaylandScreen. Use XWayland in Wayland sessions too.
     makeWrapper "$out/lib/coremail/cmclient" "$out/bin/coremail" \
       "''${gappsWrapperArgs[@]}" \
+      --set GDK_BACKEND x11 \
       --prefix LD_LIBRARY_PATH : "$out/lib/coremail" \
       --prefix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
       --prefix XDG_DATA_DIRS : "$out/share"
