@@ -11,6 +11,7 @@
   at-spi2-core,
   atk,
   cairo,
+  cacert,
   cups,
   dbus,
   expat,
@@ -142,6 +143,7 @@ stdenv.mkDerivation (finalAttrs: {
     makeWrapper "$out/lib/coremail/cmclient" "$out/bin/coremail" \
       "''${gappsWrapperArgs[@]}" \
       --set GDK_BACKEND x11 \
+      --set-default SSL_CERT_FILE "${cacert}/etc/ssl/certs/ca-bundle.crt" \
       --prefix LD_LIBRARY_PATH : "$out/lib/coremail" \
       --prefix PATH : "${lib.makeBinPath [ xdg-utils ]}" \
       --prefix XDG_DATA_DIRS : "$out/share"

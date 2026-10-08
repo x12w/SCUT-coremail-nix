@@ -70,6 +70,9 @@ nix store prefetch-file --json \
 - 保留上游 CEF、资源和语言文件；用 GTK wrapper 配置 GSettings、GIO 等运行环境。
 - 启动器固定 `GDK_BACKEND=x11`：上游界面直接调用 X11 API，原生 Wayland
   会出现 `GdkWaylandScreen` 转换错误并崩溃。Wayland 桌面需要启用 XWayland。
+- 为内置 OpenSSL 设置 `SSL_CERT_FILE`，使用 Nix 的 CA 证书包，避免默认
+  `/usr/local/ssl/cert.pem` 不存在导致登录 TLS 握手失败。若需使用系统或自定义
+  CA，可在启动前设置 `SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt`。
 - 修正桌面文件中的 `/opt` 路径，保留 `mailto:` 和 `.eml` 文件关联声明。
 - 不运行 Debian 安装/卸载脚本。升级通过更新 Nix 定义并重新构建完成，
   不使用客户端内置更新器修改只读 Nix store。
@@ -84,6 +87,7 @@ nix store prefetch-file --json \
 - Xvfb / X11 下可显示中文主窗口和新增邮箱账号对话框。
 - 实际 KDE Wayland 会话下通过 XWayland 显示主窗口和新增邮箱账号对话框；
   即使会话设置 `GDK_BACKEND=wayland`，启动器仍会使用 `x11`。
+- 配置 CA 证书后，已由用户确认华南理工学生邮箱登录成功。
 
-未验证真实账号登录和收发邮件。原生 Wayland 不受此版本支持；
+未验证收发邮件。原生 Wayland 不受此版本支持；
 Wayland 会话下启动器会自动使用 XWayland。
